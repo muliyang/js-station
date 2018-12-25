@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+</head>
+    <div>
+        用户名：<input type="text" id="userName"><br>
+        密码：<input type=" text" id="passWord"><br>
+        <button id="btn">登陆</button>
+    </div>
+    <script type="text/javascript">
+        var _serverUrl = 'http://127.0.0.1:3080/login';
+        var btn = document.getElementById('btn');
+        btn.onclick = function(){
+            var _user = document.getElementById('userName').value;
+            var _pass = document.getElementById('passWord').value;
+            var param = {'userName':_user,'passWord':_pass};
+            _serverUrl = _serverUrl+'?userName='+_user+'&passWord='+_pass;
+            fetch(_serverUrl,{
+                method:'get'
+            }).then(function(res){
+                console.log(res);
+            })
+
+        }
+    </script>
+</body>
+</html>

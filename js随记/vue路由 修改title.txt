@@ -1,0 +1,87 @@
+﻿这篇文章主要介绍了基于Vue的SPA动态修改页面title的方法,需要的朋友可以参考下
+最近基于VUE做个SPA手机端web发现动态修改页面标题通过document.title=xxxx 来修改着实蛋疼，而且在IOS的微信端据说没效果。百度发现要针对IOS的微信做点额外的操作，即：创建一个隐藏的Iframe，然后随便加载一个图片文件，然后加载完成移除，这样就能修改页面title了。网上有几种方案：
+
+1，App.Vue里面设置title属性，然后页面title去绑定，所有子组件修改标题就通过 this.$root.data.title=xxxxx;去修改
+
+缺点：App.Vue默认的el只是body的一个p，这样干需要绑定整个html
+
+2，通过自定义指令实现
+
+Vue.directive('title', {
+ inserted: function (el, binding) {
+ document.title = el.innerText
+ el.remove()
+ }
+})
+调用方法： <p v-title>标题内容</p>
+
+优点：这样自定义程度较大（暂且不讨论IOS微信端是否能修改成功）
+
+缺点：无法满足某些JS方法中修改页面标题的需求，例如页面为一个websocket的页面，收到消息要动态显示页面标题这时候频繁去修改p绑定的text并不恰当
+
+针对网上查到的上面两种方法，我进行了合并，利用vue的插件实现SPA的页面标题修改：
+
+var plugin={};
+plugin.install=function(Vue,options){
+ Vue.prototype.$title=function(title){
+  document.title=title;
+  var iframe=document.createElement("iframe");
+  iframe.style.display='none';
+  iframe.setAttribute('src','/e.png');
+  var loadedCallback=()=>{
+   iframe.removeEventListener('load',loadedCallback);
+   document.body.removeChild(iframe);
+  };
+  iframe.addEventListener('load',loadedCallback);
+  document.body.appendChild(iframe);
+ };
+};
+module.exports=plugin;
+调用方法： this.$title('xxxxxx'); 当然你可以替换为一个绑定的变量，然后watch进行实时调整。
+
+ps：Vue Spa切换页面时更改标题
+
+在Vue组件化开发过程中，因为是单页面开发，但是有时候需要页面的title根据情况改变，于是上网查了一下，各种说法花(wo)里(kan)胡(bu)哨(dong)， 于是想到一个黑科技 documet.title="xxx";
+
+随便创建一个项目，在独立的模块中，created在钩子函数启动之后document.title='标题'; 但是据说在IOS的微信下是无效的，虽然用苹果机测试过有用，但是想到这样会影响我的代码洁癖。
+
+<script>
+export default {
+  data(){
+    return{
+    }
+  },
+  created(){
+    document.title="首页"
+  },
+}
+</script>
+于是在github上找到一个好用的东西 vue-wechat-title
+
+通过 npm install vue-wechat-title 安装
+
+引入需要的vue-router与页面需要的组件之后
+
+const router = new VueRouter({
+  mode: 'history',
+  routes:[
+    {
+    name: 'index',
+    path: '/',
+    meta: {
+        title: '首页'
+     },
+     component: index
+    },
+   {
+     name: 'root',
+     path: '/root', 
+     meta: {
+        title: '肉特'
+    },
+    component: root
+    }  
+ ]
+});
+Vue.use(require('vue-wechat-title')); //实例化参数
+在组件中顶部添加一段 <p v-wechat-title="$route.meta.title"></p>

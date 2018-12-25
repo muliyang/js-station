@@ -1,0 +1,26 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<body>
+		<div id="father">
+            <div>01</div>
+            <div>02</div>
+            <div>03</div>
+        </div>
+        <script type="text/javascript">
+        var $el = document.querySelector('#father');
+        var frag = document.createElement('div'), node = null;
+        //把app的dom移动到内存中进行操作
+        console.log($el.firstChild)
+        while (node = $el.firstChild) {
+            console.dir('node',node)
+            console.dir($el.firstChild)
+            frag.appendChild(node)
+        }
+		</script>
+	</body>
+</html>
