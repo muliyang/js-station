@@ -326,7 +326,7 @@ run5();
 
 #### 方法的可选参数
 
-/在es5中 方法的实参和形参可以不一样，但是在ts中方法的实参和形参必须一样，如果不一样，需要配置可选参数
+/在es5中 方法的实参和形参可以不一样，但是在ts中方法的实参和形参必须一样，如果不一样，需要配置可选参数: ` 参数名 ?: 参数类型 ; ？配置可选参数, 可选参数必须配置在参数的最后`
 
 ```typescript
 function getInfo(name:string,age:number):string{
@@ -337,16 +337,93 @@ getInfo('哈哈');
 
 function getInfo(name:string,age?:number):string{
     if(age){
-        return `${age}岁---${name}`;
+        return `${age}岁 --- ${name}`;
     }else{
-        return `${name}`;
+        return `${name} --- 年龄未知`;
     }
 }
 ```
 
 
 
+#### 方法的默认参数
 
+调用一个方法的时候 可以指定参数的默认值
+
+```typescript
+function getInfo2(name:string,age:number=20):string{
+    return `${age}岁 --- ${name}`
+}
+console.log(getInfo2('张三'));        //20岁 --- 张三
+console.log(getInfo2('张三',40));     //40岁 --- 张三
+```
+
+
+
+#### 方法的剩余参数  
+
+使用`...运算符 接收形参传进来的值`
+
+```typescript
+function sum(a:number, b:number, c:number, d:number):number{
+    return a+b+c+d;
+}
+console.log(sum(1,2,3,4))    //10
+
+function sum2(...result:number[]):number{
+    let total = 0;
+    result.map(i=>{
+        total += i;
+    })
+    return total;
+}
+console.log(sum2(1,2,3,4,5));  //15
+
+function sum3(a:number,b:number,...result:number[]):number{
+    let total = a+b;
+    result.map(i=>{
+        total += i;
+    })
+    return total;
+}
+console.log(sum3(3,4,5,6,7,8));  //33
+```
+
+
+
+#### 函数的重载
+
+java中的重载：是两个或两个以上同名函数，但是它们的参数不一样，这时候会出现重载的情况。
+
+ts中的重载：通过为同一个函数提供多个函数类型定义来试下多种功能的目的。（传入不同的参数 执行实现不用的结果）
+
+ts为了兼容es5和es6， 重载的写法 和 java有区别
+
+```typescript
+//在es5中 出现同名的方法 后定义的会覆盖先定义的方法
+function css(config){
+    
+}
+function css(config,value){
+    
+}
+
+//ts中的重载 因为ts会校验参数类型 这样写 可以实现传入不同类型的参数 共用一个方法
+function getInf(name:string):string;
+function getInf(age:number):number;
+function getInf(str:any):any{
+    if(typeof str === 'string'){
+        return `my name is ${str}`;
+    }else{
+        return `my age is ${str}`;
+    }
+};
+
+console.log(getInf(123));   //my age is 123
+console.log(getInf('lili'));   //my name is lili
+//getInf(true);   //运行会提示错误    
+
+```
 
 
 
