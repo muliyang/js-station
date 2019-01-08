@@ -110,7 +110,10 @@ console.log(sum3(3,4,5,6,7,8));
     console.log(getInfos('haha'));    //my name is haha
 
     
-
+    //箭头函数 箭头函数中的this指向上下文
+    setTimeout(()=>{
+        alert('run');
+    },1000)
 
 
                                  

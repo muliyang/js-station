@@ -401,12 +401,8 @@ ts为了兼容es5和es6， 重载的写法 和 java有区别
 
 ```typescript
 //在es5中 出现同名的方法 后定义的会覆盖先定义的方法
-function css(config){
-    
-}
-function css(config,value){
-    
-}
+function css(config){}
+function css(config,value){}
 
 //ts中的重载 因为ts会校验参数类型 这样写 可以实现传入不同类型的参数 共用一个方法
 function getInf(name:string):string;
@@ -423,9 +419,28 @@ console.log(getInf(123));   //my age is 123
 console.log(getInf('lili'));   //my name is lili
 //getInf(true);   //运行会提示错误    
 
+//写法2：
+function getInfos(name:string):string;
+function getInfos(name:string,age:number):string;
+function getInfos(name:any,age?:any):any{
+    return age ? `my name is ${name},my age is ${age}` : `my name is ${name}`;
+}
+
+console.log(getInfos('xixi',34));  //my name is xixi,my age is 34
+console.log(getInfos('haha'));    //my name is haha
 ```
 
 
+
+#### 箭头函数
+
+箭头函数中的this指向是上下文
+
+```typescript
+setTimeout(()=>{
+    alert('run');
+},1000)
+```
 
 
 

@@ -75,3 +75,7 @@ function getInfos(name, age) {
 }
 console.log(getInfos('xixi', 34)); //my name is xixi,my age is 34
 console.log(getInfos('haha')); //my name is haha
+//箭头函数 箭头函数中的this指向上下文
+setTimeout(function () {
+    alert('run');
+}, 1000);
